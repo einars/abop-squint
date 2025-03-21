@@ -1,0 +1,18 @@
+{
+  "name": "hellow",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite --config vite.config.js public",
+    "dev": "vite --config vite.config.js public",
+    "build": "vite --config vite.config.js build public",
+    "serve": "vite --config vite.config.js preview public"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "regl": "^2.1.1",
+    "squint-cljs": "^0.8.142",
+    "vite": "^6.2.2"
+  }
+}
