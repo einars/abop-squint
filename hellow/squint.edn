@@ -1,2 +1,3 @@
 {:paths ["src"]
- :output-dir "public"}
+ :output-dir "public",
+ :extension "js"}

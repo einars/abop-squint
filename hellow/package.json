@@ -11,7 +11,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "regl": "^2.1.1",
     "squint-cljs": "^0.8.142",
     "vite": "^6.2.2"
   }
