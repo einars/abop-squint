@@ -1,19 +1,17 @@
 import * as squint_core from 'squint-cljs/core.js';
 var regl = createREGL(".gl-canvas");
 var Tau = (Math.PI) * (2);
-var angle_90 = (Tau) / (4);
-var angle_60 = (Tau) / (6);
 var square_island = ({ "me": ["F", "-", "F", "-", "F", "-", "F"], "F": ["F", "-", "F", "+", "F", "+", "F", "F", "-", "F", "-", "F", "+", "F"] });
 var bobo = ({ "name": "Bobo", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F-F-F-F-F+F" });
 var fig1_9b = ({ "name": "Fig 1.9b", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F-F-F-FF" });
 var fig1_9c = ({ "name": "Fig 1.9c", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F+F-F-FF" });
 var fig1_10a = ({ "name": "Fig 1.10a Dragon curve", "me": ["F1"], "F1": ["F1", "+", "FR", "+"], "FR": ["-", "F1", "-", "FR"] });
-var fig1_10b = ({ "name": "Fig 1.10b Sierpinski gasket", "angle": angle_60, "me": ["F1"], "F1": ["FR", "+", "F1", "+", "FR"], "FR": ["F1", "-", "FR", "-", "F1"] });
+var fig1_10b = ({ "name": "Fig 1.10b Sierpinski gasket", "angle": (Tau) / (6), "me": ["F1"], "F1": ["FR", "+", "F1", "+", "FR"], "FR": ["F1", "-", "FR", "-", "F1"] });
 var rebase_0 = function (pts) {
 const min_x1 = squint_core.apply(Math.min, squint_core.mapv(squint_core.first, pts));
 const min_y2 = squint_core.apply(Math.min, squint_core.mapv(squint_core.second, pts));
-return squint_core.mapv((function (p__1202) {
-const vec__36 = p__1202;
+return squint_core.mapv((function (p__1205) {
+const vec__36 = p__1205;
 const x7 = squint_core.nth(vec__36, 0, null);
 const y8 = squint_core.nth(vec__36, 1, null);
 return [(x7) - (min_x1), (y8) - (min_y2)];;
@@ -43,8 +41,8 @@ continue;
 }
 ;
 };
-var move = function (p__1203, angle) {
-const vec__14 = p__1203;
+var move = function (p__1206, angle) {
+const vec__14 = p__1206;
 const x5 = squint_core.nth(vec__14, 0, null);
 const y6 = squint_core.nth(vec__14, 1, null);
 return [(x5) + (Math.cos(angle)), (y6) + (Math.sin(angle))];;
@@ -57,8 +55,8 @@ let accum4 = [[0, 0]];
 while(true){
 const npos5 = move(pos2, facing3);
 const nkoch6 = squint_core.next(koch1);
-const G__12047 = squint_core.first(koch1);
-switch (G__12047) {case "F":
+const G__12077 = squint_core.first(koch1);
+switch (G__12077) {case "F":
 let G__9 = nkoch6;
 let G__10 = npos5;
 let G__11 = facing3;
@@ -151,7 +149,7 @@ console.log("Booting up");
 const vec__14 = [fig1_10b, 7];
 const algo5 = squint_core.nth(vec__14, 0, null);
 const iterations6 = squint_core.nth(vec__14, 1, null);
-const k7 = materialize(get_koch(algo5, iterations6), squint_core.get(algo5, "angle", angle_90));
+const k7 = materialize(get_koch(algo5, iterations6), squint_core.get(algo5, "angle", (Tau) / (4)));
 const projection8 = best_projection(k7);
 regl.frame((function () {
 regl.clear(({ "color": [1, 1, 1, 1], "depth": 1 }));
@@ -162,4 +160,4 @@ return document.querySelector(".text").innerHTML = squint_core.str(squint_core.g
 };
 main();
 
-export { continuous_line, frag, materialize, regl, padded_ortho_projection, square_island, fig1_10a, angle_90, vert, get_koch, draw_triangle, angle_60, rebase_0, best_projection, main, fig1_9b, fig1_10b, bobo, move, koch_step, fig1_9c, Tau }
+export { continuous_line, frag, materialize, regl, padded_ortho_projection, square_island, fig1_10a, vert, get_koch, draw_triangle, rebase_0, best_projection, main, fig1_9b, fig1_10b, bobo, move, koch_step, fig1_9c, Tau }

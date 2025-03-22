@@ -2,8 +2,6 @@
 (def regl (js/createREGL ".gl-canvas"))
 
 (def Tau (* js/Math.PI 2))
-(def angle-90 (/ Tau 4))
-(def angle-60 (/ Tau 6))
 
 
 (def square-island {:me [:F :- :F :- :F :- :F]
@@ -27,7 +25,7 @@
 
 
 (def fig1-10b {:name "Fig 1.10b Sierpinski gasket"
-               :angle angle-60
+               :angle (/ Tau 6)
                :me [:F1]
                :F1 [:FR :+ :F1 :+ :FR]
                :FR [:F1 :- :FR :- :F1]})
@@ -131,7 +129,7 @@ void main() {
         ;[algo iterations] [fig1-9c 4]
         ;[algo iterations] [fig1-10a 13]
         [algo iterations] [fig1-10b 7]
-        k (materialize (get-koch algo iterations) (:angle algo angle-90))
+        k (materialize (get-koch algo iterations) (:angle algo (/ Tau 4)))
 
         projection (best-projection k)
         ]
