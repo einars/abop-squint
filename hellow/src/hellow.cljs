@@ -6,43 +6,37 @@
 (def angle-60 (/ Tau 6))
 
 
-(defn scale-down [line]
-  (let [min-x (apply min (map first line))
-        max-x (apply max (map first line))
-        min-y (apply min (map second line))
-        max-y (apply max (map second line))
-        scale (max 
-                (- max-x min-x) 
-                (- max-y min-y))
-        scale (/ scale 2)]
-    (mapv (fn [[x y]] (list 
-                        (* 0.95 (- (/ (- x min-x) scale) 1))
-                        (* 0.95 (- (/ (- y min-y) scale) 1)))) line)
-    ))
-
-
 (def square-island {:me [:F :- :F :- :F :- :F]
                     :F [:F :- :F :+ :F :+ :F :F :- :F :- :F :+ :F]})
-(def bobo {:me [:F :- :F :- :F :- :F]
+(def bobo {:name "Bobo"
+           :me [:F :- :F :- :F :- :F]
            :F "FF-F-F-F-F-F+F"})
 
-(def fig1-9b {:me [:F :- :F :- :F :- :F]
+(def fig1-9b {:name "Fig 1.9b"
+              :me [:F :- :F :- :F :- :F]
               :F "FF-F-F-F-FF"})
 
-(def fig1-9c {:me [:F :- :F :- :F :- :F]
+(def fig1-9c {:name "Fig 1.9c"
+              :me [:F :- :F :- :F :- :F]
               :F "FF-F+F-F-FF"})
 
-(def fig1-10a {:name "fig1-10a"
+(def fig1-10a {:name "Fig 1.10a"
                :me [:F1]
                :F1 [:F1 :+ :FR :+]
                :FR [:- :F1 :- :FR]})
 
 
-(def fig1-10b {:name "fig1-10b"
+(def fig1-10b {:name "Fig 1.10b"
                :angle angle-60
                :me [:F1]
                :F1 [:FR :+ :F1 :+ :FR]
                :FR [:F1 :- :FR :- :F1]})
+
+(defn rebase-0 [pts]
+  (let [min-x (apply js/Math.min (mapv first pts))
+        min-y (apply js/Math.min (mapv second pts))]
+    (mapv (fn [[x y]] [(- x min-x) (- y min-y)]) pts)))
+
 
 (defn koch-step [koch]
   (loop [current (:me koch), accum []]
@@ -60,7 +54,6 @@
 
 
 (defn materialize [koch turn-angle]
-  (println "materializing" (count (:me koch)))
   (loop [koch (:me koch), pos [0 0], facing 0.0, accum [[0 0]]]
     (let [npos (move pos facing)
           nkoch (next koch)]
@@ -70,7 +63,20 @@
         :FR (recur nkoch npos facing (conj accum npos))
         :+ (recur nkoch pos (+ facing turn-angle) accum)
         :- (recur nkoch pos (- facing turn-angle) accum)
-        (scale-down accum)))))
+        (rebase-0 accum)))))
+
+(defn padded-ortho-projection [w h]
+  (let [m (js/mat4.create)
+        padding 5]
+    ; 0 0 — bottom left
+    (js/mat4.ortho m (- padding) (+ padding w) (- padding) (+ padding h) -10 10)
+    m))
+
+(defn best-projection [pts]
+  (let [max-x (apply js/Math.max (mapv first pts))
+        max-y (apply js/Math.max (mapv second pts))
+        max (js/Math.max max-x max-y)]
+    (padded-ortho-projection max max)))
 
 
 (def frag "
@@ -83,9 +89,10 @@ void main() {
 
 (def vert "
 precision mediump float;
+uniform mat4 projection;
 attribute vec2 position;
 void main() {
-  gl_Position = vec4(position, 0, 1);
+  gl_Position = projection * vec4(position, 0, 1);
 }
   ")
 
@@ -93,8 +100,10 @@ void main() {
   (regl
     {:frag frag
      :vert vert
-     :uniforms {:color [1 0 0 1 ]}
-     :attributes {:position (regl/prop "points") }
+     :uniforms {:color [1 0 0 1 ]
+                :projection (regl/prop "projection")}
+     :attributes {:position (regl/prop "points") 
+                  }
      :elements (fn [ctx props batchid]
                  (mapv #(list % (inc %)) (range (dec (count (:points props))))))
      }))
@@ -116,16 +125,20 @@ void main() {
   (js/console.log "Booting up")
   (let [;[algo iterations] [fig1-10a 13]
         ;[algo iterations] [square-island 3]
-        ;[algo iterations] [bobo 4]
+        [algo iterations] [bobo 4]
         ;[algo iterations] [fig1-9b 4]
-        ;[algo iterations angle] [fig1-9c 4 angle-90]
-        ;[algo iterations angle] [fig1-9c 3 angle-90]
-        [algo iterations] [fig1-10b 7]
-        k (materialize (get-koch algo iterations) (:angle algo angle-90))]
+        ;[algo iterations] [fig1-9c 3]
+        ;[algo iterations] [fig1-9c 4]
+        ;[algo iterations] [fig1-10b 7]
+        k (materialize (get-koch algo iterations) (:angle algo angle-90))
+
+        projection (best-projection k)
+        ]
     (regl/frame #(do
                    (regl/clear {:color [1, 1, 1, 1]
                                 :depth 1 })
-                   (continuous-line {:points k})))
+                   (continuous-line {:points k
+                                     :projection projection })))
     (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name algo) ", " iterations " iterācijas, " (count k) " segmenti"))
     ))
 
