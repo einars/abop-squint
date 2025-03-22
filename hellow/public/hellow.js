@@ -7,13 +7,13 @@ var square_island = ({ "me": ["F", "-", "F", "-", "F", "-", "F"], "F": ["F", "-"
 var bobo = ({ "name": "Bobo", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F-F-F-F-F+F" });
 var fig1_9b = ({ "name": "Fig 1.9b", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F-F-F-FF" });
 var fig1_9c = ({ "name": "Fig 1.9c", "me": ["F", "-", "F", "-", "F", "-", "F"], "F": "FF-F+F-F-FF" });
-var fig1_10a = ({ "name": "Fig 1.10a", "me": ["F1"], "F1": ["F1", "+", "FR", "+"], "FR": ["-", "F1", "-", "FR"] });
-var fig1_10b = ({ "name": "Fig 1.10b", "angle": angle_60, "me": ["F1"], "F1": ["FR", "+", "F1", "+", "FR"], "FR": ["F1", "-", "FR", "-", "F1"] });
+var fig1_10a = ({ "name": "Fig 1.10a Dragon curve", "me": ["F1"], "F1": ["F1", "+", "FR", "+"], "FR": ["-", "F1", "-", "FR"] });
+var fig1_10b = ({ "name": "Fig 1.10b Sierpinski gasket", "angle": angle_60, "me": ["F1"], "F1": ["FR", "+", "F1", "+", "FR"], "FR": ["F1", "-", "FR", "-", "F1"] });
 var rebase_0 = function (pts) {
 const min_x1 = squint_core.apply(Math.min, squint_core.mapv(squint_core.first, pts));
 const min_y2 = squint_core.apply(Math.min, squint_core.mapv(squint_core.second, pts));
-return squint_core.mapv((function (p__1148) {
-const vec__36 = p__1148;
+return squint_core.mapv((function (p__1202) {
+const vec__36 = p__1202;
 const x7 = squint_core.nth(vec__36, 0, null);
 const y8 = squint_core.nth(vec__36, 1, null);
 return [(x7) - (min_x1), (y8) - (min_y2)];;
@@ -43,8 +43,8 @@ continue;
 }
 ;
 };
-var move = function (p__1149, angle) {
-const vec__14 = p__1149;
+var move = function (p__1203, angle) {
+const vec__14 = p__1203;
 const x5 = squint_core.nth(vec__14, 0, null);
 const y6 = squint_core.nth(vec__14, 1, null);
 return [(x5) + (Math.cos(angle)), (y6) + (Math.sin(angle))];;
@@ -57,8 +57,8 @@ let accum4 = [[0, 0]];
 while(true){
 const npos5 = move(pos2, facing3);
 const nkoch6 = squint_core.next(koch1);
-const G__11507 = squint_core.first(koch1);
-switch (G__11507) {case "F":
+const G__12047 = squint_core.first(koch1);
+switch (G__12047) {case "F":
 let G__9 = nkoch6;
 let G__10 = npos5;
 let G__11 = facing3;
@@ -148,7 +148,7 @@ return squint_core.nth(squint_core.iterate(koch_step, rules), generation);
 var draw_triangle = regl(({ "frag": frag, "vert": vert, "attributes": ({ "position": regl.buffer([[-2, -2], [4, -2], [4, 4]]) }), "uniforms": ({ "color": regl.prop("color") }), "count": 3 }));
 var main = function () {
 console.log("Booting up");
-const vec__14 = [bobo, 4];
+const vec__14 = [fig1_10b, 7];
 const algo5 = squint_core.nth(vec__14, 0, null);
 const iterations6 = squint_core.nth(vec__14, 1, null);
 const k7 = materialize(get_koch(algo5, iterations6), squint_core.get(algo5, "angle", angle_90));

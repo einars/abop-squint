@@ -20,13 +20,13 @@
               :me [:F :- :F :- :F :- :F]
               :F "FF-F+F-F-FF"})
 
-(def fig1-10a {:name "Fig 1.10a"
+(def fig1-10a {:name "Fig 1.10a Dragon curve"
                :me [:F1]
                :F1 [:F1 :+ :FR :+]
                :FR [:- :F1 :- :FR]})
 
 
-(def fig1-10b {:name "Fig 1.10b"
+(def fig1-10b {:name "Fig 1.10b Sierpinski gasket"
                :angle angle-60
                :me [:F1]
                :F1 [:FR :+ :F1 :+ :FR]
@@ -123,13 +123,14 @@ void main() {
 
 (defn main[]
   (js/console.log "Booting up")
-  (let [;[algo iterations] [fig1-10a 13]
+  (let [
         ;[algo iterations] [square-island 3]
-        [algo iterations] [bobo 4]
+        ;[algo iterations] [bobo 3]
         ;[algo iterations] [fig1-9b 4]
         ;[algo iterations] [fig1-9c 3]
         ;[algo iterations] [fig1-9c 4]
-        ;[algo iterations] [fig1-10b 7]
+        ;[algo iterations] [fig1-10a 13]
+        [algo iterations] [fig1-10b 7]
         k (materialize (get-koch algo iterations) (:angle algo angle-90))
 
         projection (best-projection k)

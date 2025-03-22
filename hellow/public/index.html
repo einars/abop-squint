@@ -7,43 +7,56 @@
     <title>Koch curves and shit</title>
 
 
-    <!-- link rel="stylesheet" href="style.css" -->
     <link rel="icon" href="/favicon.ico">
     <style type="text/css">
       * {
         margin: 0; padding: 0;
         box-sizing: border-box;
       }
+      html, body {
+        height: 100%;
+      }
       body {
+        background: white;
+        background-image:
+          repeating-linear-gradient(0deg, #e3e3e3 0, #fff 1px, transparent 1px, transparent 6px),
+          repeating-linear-gradient(90deg, #e3e3e3 0, #fff 1px, transparent 1px, transparent 6px);
+        background-position: 0 0;
+
         padding: 20px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: white;
-        height: 100vh;
         gap: 0.4rem;
-        background: url(/p6.png);
+
+        .padding: 20px;
+
         font-family: "iA Writer Duo V", sans-serif;
       }
+
       .gl-canvas {
         width: calc(min(90vh, 90vw) - 60px);
         aspect-ratio: 1/1;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ccc;
+        background: white;
       }
+
       .text {
         color: #888;
       }
     </style>
-  </head>
 
-  <body>
     <script language="javascript" src="/regl.js"></script> 
     <script language="javascript" src="/gl-matrix.js"></script> 
     <script src="/hellow.js" type="module"></script>
 
-    <div class="gl-canvas"></div>
-    <div class="text"></div>
+  </head>
+
+  <body>
+      <div class="gl-canvas"></div>
+      <div class="text">TEXT PLACEHOLDER</div>
     
   </body>
 </html>
