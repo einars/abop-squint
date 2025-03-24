@@ -70,8 +70,16 @@
     }
   </style>
 
+  <script type="importmap">
+    {
+      "imports": {
+        "squint-cljs/core.js": "/squint-cljs/core.js",
+        "squint-cljs/string.js": "/squint-cljs/string.js"
+      }
+    }
+  </script>
   <script language="javascript" src="/regl.js"></script> 
-  <script language="javascript" src="/gl-matrix.js"></script> 
+  <script language="javascript" type="module" src="/gl-matrix.js"></script> 
   <script src="/hellow.js" type="module"></script>
 
 </head>
@@ -91,7 +99,7 @@
       </div>
     </div>
   <p>This is a small L-systems experiment that I'm doing while reading <a href="https://archive.org/details/the-algorithmic-beauty-of-plants">The Algorithmic Beauty of Plants</a>. This is just the beginning of the first chapter. The good stuff will come later.</p>
-  <p>Written by <a href="https://spicausis.lv/">Einar Lielmanis</a> in clojure in <a href="https://github.com/squint-cljs/squint">Squint</a>, uses <a href="https://regl-project.github.io/regl/">regl</a> for WebGL stuff, <a href="https://github.com/toji/gl-matrix">gl-matrix</a> and <a href="https://picocss.com/docs">pico.css</a>.</p>
+  <p>Written by <a href="https://spicausis.lv/">Einar Lielmanis</a> in Clojure / <a href="https://github.com/squint-cljs/squint">Squint</a>, uses <a href="https://regl-project.github.io/regl/">regl</a> for WebGL stuff, <a href="https://github.com/toji/gl-matrix">gl-matrix</a> and <a href="https://picocss.com/docs">pico.css</a>.</p>
   <p>Source on <a href="https://github.com/einars/abop-squint">github</a>.
   </main>
 

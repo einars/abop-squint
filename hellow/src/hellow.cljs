@@ -3,9 +3,9 @@
 
 (def regl (js/createREGL ".gl-canvas"))
 
+
 (def Tau (* js/Math.PI 2))
 
-(def *figure (atom nil))
 (def *points (atom nil))
 (def *projection (atom nil))
 
@@ -17,9 +17,9 @@
     [(str/trim (.substring s 0 pos)) (str/trim (.substring s (inc pos)))]))
 
 
-
 (defn fig->str [fig]
   (str/join (mapv (fn [[k v]] (str k ": " (if (seq? v) (apply str v) (str v)) "\n")) fig)))
+
 
 (defn parse-line-and-collect [accum line]
   (when-let [s (str/trim line)]
@@ -32,8 +32,10 @@
         nil accum
         (assoc accum k v)))))
 
+
 (defn str->fig [s]
   (reduce parse-line-and-collect {} (str/split-lines s)))
+
 
 (def known-figures  
   [{:name "Fig 1.6 Quadratic Koch island"
@@ -84,12 +86,11 @@
    {:name "Fig 1.11b generic Gosper"
     :angle 90
     :iterations 2
-    :me "-R"
+    :me "R"
     :L "LL-R-R+L+L-R-RL+R+LLR-L+R+LL+R-LR-R-L+L+RR-"
     :R "+LL-R-R+L+LR+L-RR-L-R+LRR-L-RL+L+R-R-L+L+RR"
-    }
+    }])
 
-   ])
 
 (defn rebase-0 [pts]
   (let [min-x (apply js/Math.min (mapv first pts))
@@ -124,12 +125,14 @@
         :- (recur nkoch pos (- facing turn-angle) accum)
         (rebase-0 accum)))))
 
+
 (defn padded-ortho-projection [w h]
   (let [m (js/mat4.create)
         padding 5]
     ; 0 0 — bottom left
     (js/mat4.ortho m (- padding) (+ padding w) (- padding) (+ padding h) -10 10)
     m))
+
 
 (defn best-projection [pts]
   (let [max-x (apply js/Math.max (mapv first pts))
@@ -146,6 +149,7 @@ void main() {
 }
   ")
 
+
 (def vert "
 precision mediump float;
 uniform mat4 projection;
@@ -154,6 +158,7 @@ void main() {
   gl_Position = projection * vec4(position, 0, 1);
 }
   ")
+
 
 (def continuous-line []
   (regl
@@ -167,8 +172,10 @@ void main() {
                  (mapv #(list % (inc %)) (range (dec (count (:points props))))))
      }))
 
+
 (defn get-koch [rules generation]
   (nth (iterate koch-step rules) generation))
+
 
 (def draw-triangle
   (regl
@@ -180,8 +187,10 @@ void main() {
      :uniforms {:color (regl/prop "color")}
      :count 3 }))
 
+
 (defn load-figure! [fig]
   (set! (.-value (js/document.querySelector "textarea")) (fig->str fig)))
+
 
 (defn set-figure! [fig]
   (let [iterations (:iterations fig 3)
@@ -190,6 +199,7 @@ void main() {
     (reset! *points k)
     (reset! *projection (best-projection k))
     (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
+
 
 (defn build-menu! [figures]
   (let [root (js/document.querySelector ".menu")]
@@ -205,6 +215,7 @@ void main() {
         (set! (.-innerHTML b) (:name f))
         (.addEventListener b "click" on-click)
         (.appendChild root b)))))
+
 
 (defn enable-run! []
   (let [b (js/document.querySelector ".run")

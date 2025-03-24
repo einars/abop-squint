@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  server: {
-  },
+  root: './src',
+  publicDir: '../public',
   build: {
-    target: 'esnext',
+    outDir: 'dist',
   },
 });
