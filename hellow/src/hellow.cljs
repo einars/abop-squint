@@ -205,12 +205,10 @@ void main() {
     (if (> (count (:me result)) limit)
       (.remove (.-classList (js/document.querySelector ".warning")) "--hidden")
       (.add (.-classList (js/document.querySelector ".warning")) "--hidden"))
-
-    (.removeAttribute (js/document.querySelector ".run")) "aria-busy")
-
-  (reset! *points k)
-  (reset! *projection (best-projection k))
-  (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
+    (.removeAttribute (js/document.querySelector ".run") "aria-busy")
+    (reset! *points k)
+    (reset! *projection (best-projection k))
+    (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
 
 
 (defn build-menu! [figures]
@@ -251,7 +249,6 @@ void main() {
                               :depth 1 })
                  (when (and @*points @*projection)
                    (continuous-line {:points @*points
-                                     :projection @*projection }))))
-  )
+                                     :projection @*projection })))))
 
 (main)

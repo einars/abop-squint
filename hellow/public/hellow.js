@@ -12,8 +12,8 @@ const pos2 = temp__23828__auto__1;
 return [str.trim(s.substring(0, pos2)), str.trim(s.substring((pos2 + 1)))];;};;
 };
 var fig__GT_str = function (fig) {
-return str.join(squint_core.mapv((function (p__81) {
-const vec__14 = p__81;
+return str.join(squint_core.mapv((function (p__56) {
+const vec__14 = p__56;
 const k5 = squint_core.nth(vec__14, 0, null);
 const v6 = squint_core.nth(vec__14, 1, null);
 return squint_core.str(k5, ": ", ((squint_core.truth_(squint_core.seq_QMARK_(v6))) ? (squint_core.apply(squint_core.str, v6)) : (squint_core.str(v6))), "\n");;
@@ -26,16 +26,16 @@ const s2 = temp__23828__auto__1;
 const vec__36 = split_into_two(s2);
 const k7 = squint_core.nth(vec__36, 0, null);
 const v8 = squint_core.nth(vec__36, 1, null);
-const G__829 = k7;
-if (("name") === (G__829)) {
+const G__579 = k7;
+if (("name") === (G__579)) {
 return squint_core.assoc(accum, "name", v8)} else {
-if (("iterations") === (G__829)) {
+if (("iterations") === (G__579)) {
 return squint_core.assoc(accum, "iterations", squint_core.parse_long(v8))} else {
-if (("angle") === (G__829)) {
+if (("angle") === (G__579)) {
 return squint_core.assoc(accum, "angle", squint_core.parse_long(v8))} else {
-if (("me") === (G__829)) {
+if (("me") === (G__579)) {
 return squint_core.assoc(accum, "me", squint_core.into([], v8))} else {
-if ((null) === (G__829)) {
+if ((null) === (G__579)) {
 return accum} else {
 if ("else") {
 return squint_core.assoc(accum, k7, v8)} else {
@@ -48,8 +48,8 @@ var known_figures = [({ "name": "Fig 1.6 Quadratic Koch island", "angle": 90, "i
 var rebase_0 = function (pts) {
 const min_x1 = squint_core.apply(Math.min, squint_core.mapv(squint_core.first, pts));
 const min_y2 = squint_core.apply(Math.min, squint_core.mapv(squint_core.second, pts));
-return squint_core.mapv((function (p__83) {
-const vec__36 = p__83;
+return squint_core.mapv((function (p__58) {
+const vec__36 = p__58;
 const x7 = squint_core.nth(vec__36, 0, null);
 const y8 = squint_core.nth(vec__36, 1, null);
 return [(x7) - (min_x1), (y8) - (min_y2)];;
@@ -85,8 +85,8 @@ continue;
 }
 ;
 };
-var move = function (p__84, angle) {
-const vec__14 = p__84;
+var move = function (p__59, angle) {
+const vec__14 = p__59;
 const x5 = squint_core.nth(vec__14, 0, null);
 const y6 = squint_core.nth(vec__14, 1, null);
 return [(x5) + (Math.cos(angle)), (y6) + (Math.sin(angle))];;
@@ -99,8 +99,8 @@ let accum4 = [[0, 0]];
 while(true){
 const npos5 = move(pos2, facing3);
 const nkoch6 = squint_core.next(koch1);
-const G__857 = squint_core.first(koch1);
-switch (G__857) {case "F":
+const G__607 = squint_core.first(koch1);
+switch (G__607) {case "F":
 let G__9 = nkoch6;
 let G__10 = npos5;
 let G__11 = facing3;
@@ -193,6 +193,7 @@ return document.querySelector("textarea").value = fig__GT_str(fig);
 ;
 };
 var set_figure_BANG_ = function (fig) {
+document.querySelector(".run").setAttribute("aria-busy", "true");
 const iterations1 = squint_core.get(fig, "iterations", 3);
 const angle2 = (Tau) * (squint_core.get(fig, "angle", 90)) * (1 / 360);
 const result3 = get_koch(fig, iterations1);
@@ -200,6 +201,7 @@ const k4 = materialize(result3, angle2);
 if ((squint_core.count(squint_core.get(result3, "me"))) > (limit)) {
 document.querySelector(".warning").classList.remove("--hidden")} else {
 document.querySelector(".warning").classList.add("--hidden")};
+document.querySelector(".run").removeAttribute("aria-busy");
 squint_core.reset_BANG_(_STAR_points, k4);
 squint_core.reset_BANG_(_STAR_projection, best_projection(k4));
 return document.querySelector(".text").innerHTML = squint_core.str(squint_core.get(fig, "name"), ", ", iterations1, " iterations, ", squint_core.count(k4), " segments");
