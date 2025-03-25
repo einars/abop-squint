@@ -9,6 +9,8 @@
 (def *points (atom nil))
 (def *projection (atom nil))
 
+(def limit 30000) ; prevent browser from freezing when you bump the iterations
+
 
 (defn split-into-two
   "Can't use str/split(s, re, limit) as limit splits all and drops the rest of the splits"
@@ -100,8 +102,10 @@
 
 (defn koch-step [koch]
   (loop [current (:me koch), accum []]
-    (if-not current
-      (assoc koch :me accum)
+    (if-not (and current (< (count accum) limit))
+      (do 
+        (js/console.log "step finished with" (count accum))
+        (assoc koch :me accum))
       (if-let [replacement (get koch (first current))]
         (recur (next current) (into accum replacement))
         (recur (next current) (conj accum (first current)))))))
@@ -193,12 +197,20 @@ void main() {
 
 
 (defn set-figure! [fig]
+  (.setAttribute (js/document.querySelector ".run") "aria-busy" "true")
   (let [iterations (:iterations fig 3)
         angle (* Tau (:angle fig 90) (/ 360))
-        k (materialize (get-koch fig iterations) angle)]
-    (reset! *points k)
-    (reset! *projection (best-projection k))
-    (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
+        result (get-koch fig iterations)
+        k (materialize result angle)]
+    (if (> (count (:me result)) limit)
+      (.remove (.-classList (js/document.querySelector ".warning")) "--hidden")
+      (.add (.-classList (js/document.querySelector ".warning")) "--hidden"))
+
+    (.removeAttribute (js/document.querySelector ".run")) "aria-busy")
+
+  (reset! *points k)
+  (reset! *projection (best-projection k))
+  (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
 
 
 (defn build-menu! [figures]

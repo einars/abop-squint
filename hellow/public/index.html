@@ -24,6 +24,7 @@
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 1rem;
+      margin-bottom: 2rem;
     }
     @media all and (max-width: 600px) {
       .panes {
@@ -56,6 +57,7 @@
       display: block;
       padding: 0.2rem 2rem;
       width: 100%;
+      margin-bottom: 0;
     }
     textarea {
       margin-bottom: 0.2rem;
@@ -65,14 +67,20 @@
     button.outline {
       padding: 0.2rem 2rem;
       text-align: left;
-      margin-bottom: 0;
       background: white;
+      margin-bottom: 0;
     }
     .menu {
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
       margin-bottom: 1rem;
+    }
+    .warning {
+      color: #933;
+    }
+    .warning.--hidden {
+      display: none;
     }
   </style>
 
@@ -96,6 +104,7 @@
     <div class="panes">
       <div class="--left">
         <div class="gl-canvas"></div>
+        <div class="warning --hidden">Limit reached, the results are truncated</div>
         <div class="text">TEXT PLACEHOLDER</div>
       </div>
       <div class="--right">

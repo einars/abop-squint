@@ -4,6 +4,7 @@ var regl = createREGL(".gl-canvas");
 var Tau = (Math.PI) * (2);
 var _STAR_points = squint_core.atom(null);
 var _STAR_projection = squint_core.atom(null);
+var limit = 30000;
 var split_into_two = function (s) {
 const temp__23828__auto__1 = s.indexOf(":");
 if (squint_core.truth_(temp__23828__auto__1)) {
@@ -11,8 +12,8 @@ const pos2 = temp__23828__auto__1;
 return [str.trim(s.substring(0, pos2)), str.trim(s.substring((pos2 + 1)))];;};;
 };
 var fig__GT_str = function (fig) {
-return str.join(squint_core.mapv((function (p__6) {
-const vec__14 = p__6;
+return str.join(squint_core.mapv((function (p__81) {
+const vec__14 = p__81;
 const k5 = squint_core.nth(vec__14, 0, null);
 const v6 = squint_core.nth(vec__14, 1, null);
 return squint_core.str(k5, ": ", ((squint_core.truth_(squint_core.seq_QMARK_(v6))) ? (squint_core.apply(squint_core.str, v6)) : (squint_core.str(v6))), "\n");;
@@ -25,16 +26,16 @@ const s2 = temp__23828__auto__1;
 const vec__36 = split_into_two(s2);
 const k7 = squint_core.nth(vec__36, 0, null);
 const v8 = squint_core.nth(vec__36, 1, null);
-const G__79 = k7;
-if (("name") === (G__79)) {
+const G__829 = k7;
+if (("name") === (G__829)) {
 return squint_core.assoc(accum, "name", v8)} else {
-if (("iterations") === (G__79)) {
+if (("iterations") === (G__829)) {
 return squint_core.assoc(accum, "iterations", squint_core.parse_long(v8))} else {
-if (("angle") === (G__79)) {
+if (("angle") === (G__829)) {
 return squint_core.assoc(accum, "angle", squint_core.parse_long(v8))} else {
-if (("me") === (G__79)) {
+if (("me") === (G__829)) {
 return squint_core.assoc(accum, "me", squint_core.into([], v8))} else {
-if ((null) === (G__79)) {
+if ((null) === (G__829)) {
 return accum} else {
 if ("else") {
 return squint_core.assoc(accum, k7, v8)} else {
@@ -47,8 +48,8 @@ var known_figures = [({ "name": "Fig 1.6 Quadratic Koch island", "angle": 90, "i
 var rebase_0 = function (pts) {
 const min_x1 = squint_core.apply(Math.min, squint_core.mapv(squint_core.first, pts));
 const min_y2 = squint_core.apply(Math.min, squint_core.mapv(squint_core.second, pts));
-return squint_core.mapv((function (p__8) {
-const vec__36 = p__8;
+return squint_core.mapv((function (p__83) {
+const vec__36 = p__83;
 const x7 = squint_core.nth(vec__36, 0, null);
 const y8 = squint_core.nth(vec__36, 1, null);
 return [(x7) - (min_x1), (y8) - (min_y2)];;
@@ -58,28 +59,34 @@ var koch_step = function (koch) {
 let current1 = squint_core.get(koch, "me");
 let accum2 = [];
 while(true){
-if (squint_core.not(current1)) {
-return squint_core.assoc(koch, "me", accum2)} else {
-const temp__23717__auto__3 = squint_core.get(koch, squint_core.first(current1));
-if (squint_core.truth_(temp__23717__auto__3)) {
-const replacement4 = temp__23717__auto__3;
-let G__5 = squint_core.next(current1);
-let G__6 = squint_core.into(accum2, replacement4);
-current1 = G__5;
-accum2 = G__6;
+if (squint_core.not((() => {
+const and__24249__auto__3 = current1;
+if (squint_core.truth_(and__24249__auto__3)) {
+return (squint_core.count(accum2)) < (limit)} else {
+return and__24249__auto__3};
+})())) {
+console.log("step finished with", squint_core.count(accum2));
+return squint_core.assoc(koch, "me", accum2);} else {
+const temp__23717__auto__4 = squint_core.get(koch, squint_core.first(current1));
+if (squint_core.truth_(temp__23717__auto__4)) {
+const replacement5 = temp__23717__auto__4;
+let G__6 = squint_core.next(current1);
+let G__7 = squint_core.into(accum2, replacement5);
+current1 = G__6;
+accum2 = G__7;
 continue;
 ;} else {
-let G__7 = squint_core.next(current1);
-let G__8 = squint_core.conj(accum2, squint_core.first(current1));
-current1 = G__7;
-accum2 = G__8;
+let G__8 = squint_core.next(current1);
+let G__9 = squint_core.conj(accum2, squint_core.first(current1));
+current1 = G__8;
+accum2 = G__9;
 continue;
 };};;break;
 }
 ;
 };
-var move = function (p__9, angle) {
-const vec__14 = p__9;
+var move = function (p__84, angle) {
+const vec__14 = p__84;
 const x5 = squint_core.nth(vec__14, 0, null);
 const y6 = squint_core.nth(vec__14, 1, null);
 return [(x5) + (Math.cos(angle)), (y6) + (Math.sin(angle))];;
@@ -92,8 +99,8 @@ let accum4 = [[0, 0]];
 while(true){
 const npos5 = move(pos2, facing3);
 const nkoch6 = squint_core.next(koch1);
-const G__107 = squint_core.first(koch1);
-switch (G__107) {case "F":
+const G__857 = squint_core.first(koch1);
+switch (G__857) {case "F":
 let G__9 = nkoch6;
 let G__10 = npos5;
 let G__11 = facing3;
@@ -188,10 +195,14 @@ return document.querySelector("textarea").value = fig__GT_str(fig);
 var set_figure_BANG_ = function (fig) {
 const iterations1 = squint_core.get(fig, "iterations", 3);
 const angle2 = (Tau) * (squint_core.get(fig, "angle", 90)) * (1 / 360);
-const k3 = materialize(get_koch(fig, iterations1), angle2);
-squint_core.reset_BANG_(_STAR_points, k3);
-squint_core.reset_BANG_(_STAR_projection, best_projection(k3));
-return document.querySelector(".text").innerHTML = squint_core.str(squint_core.get(fig, "name"), ", ", iterations1, " iterations, ", squint_core.count(k3), " segments");
+const result3 = get_koch(fig, iterations1);
+const k4 = materialize(result3, angle2);
+if ((squint_core.count(squint_core.get(result3, "me"))) > (limit)) {
+document.querySelector(".warning").classList.remove("--hidden")} else {
+document.querySelector(".warning").classList.add("--hidden")};
+squint_core.reset_BANG_(_STAR_points, k4);
+squint_core.reset_BANG_(_STAR_projection, best_projection(k4));
+return document.querySelector(".text").innerHTML = squint_core.str(squint_core.get(fig, "name"), ", ", iterations1, " iterations, ", squint_core.count(k4), " segments");
 ;;
 };
 var build_menu_BANG_ = function (figures) {
@@ -238,4 +249,4 @@ return continuous_line(({ "points": squint_core.deref(_STAR_points), "projection
 };
 main();
 
-export { continuous_line, frag, load_figure_BANG_, materialize, regl, padded_ortho_projection, split_into_two, _STAR_points, parse_line_and_collect, vert, get_koch, draw_triangle, rebase_0, best_projection, main, known_figures, build_menu_BANG_, enable_run_BANG_, move, koch_step, _STAR_projection, set_figure_BANG_, fig__GT_str, str__GT_fig, Tau }
+export { continuous_line, frag, load_figure_BANG_, materialize, regl, padded_ortho_projection, split_into_two, _STAR_points, parse_line_and_collect, vert, get_koch, draw_triangle, rebase_0, best_projection, limit, main, known_figures, build_menu_BANG_, enable_run_BANG_, move, koch_step, _STAR_projection, set_figure_BANG_, fig__GT_str, str__GT_fig, Tau }
