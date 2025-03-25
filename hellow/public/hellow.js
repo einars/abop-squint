@@ -2,9 +2,10 @@ import * as squint_core from 'squint-cljs/core.js';
 import * as str from 'squint-cljs/string.js';
 var regl = createREGL(".gl-canvas");
 var Tau = (Math.PI) * (2);
-var _STAR_points = squint_core.atom(null);
+var _STAR_figure = squint_core.atom(null);
+var _STAR_precomputed = squint_core.atom(null);
 var _STAR_projection = squint_core.atom(null);
-var limit = 30000;
+var limit = 20000;
 var split_into_two = function (s) {
 const temp__23828__auto__1 = s.indexOf(":");
 if (squint_core.truth_(temp__23828__auto__1)) {
@@ -12,8 +13,8 @@ const pos2 = temp__23828__auto__1;
 return [str.trim(s.substring(0, pos2)), str.trim(s.substring((pos2 + 1)))];;};;
 };
 var fig__GT_str = function (fig) {
-return str.join(squint_core.mapv((function (p__56) {
-const vec__14 = p__56;
+return str.join(squint_core.mapv((function (p__356) {
+const vec__14 = p__356;
 const k5 = squint_core.nth(vec__14, 0, null);
 const v6 = squint_core.nth(vec__14, 1, null);
 return squint_core.str(k5, ": ", ((squint_core.truth_(squint_core.seq_QMARK_(v6))) ? (squint_core.apply(squint_core.str, v6)) : (squint_core.str(v6))), "\n");;
@@ -26,16 +27,16 @@ const s2 = temp__23828__auto__1;
 const vec__36 = split_into_two(s2);
 const k7 = squint_core.nth(vec__36, 0, null);
 const v8 = squint_core.nth(vec__36, 1, null);
-const G__579 = k7;
-if (("name") === (G__579)) {
+const G__3579 = k7;
+if (("name") === (G__3579)) {
 return squint_core.assoc(accum, "name", v8)} else {
-if (("iterations") === (G__579)) {
+if (("iterations") === (G__3579)) {
 return squint_core.assoc(accum, "iterations", squint_core.parse_long(v8))} else {
-if (("angle") === (G__579)) {
+if (("angle") === (G__3579)) {
 return squint_core.assoc(accum, "angle", squint_core.parse_long(v8))} else {
-if (("me") === (G__579)) {
+if (("me") === (G__3579)) {
 return squint_core.assoc(accum, "me", squint_core.into([], v8))} else {
-if ((null) === (G__579)) {
+if ((null) === (G__3579)) {
 return accum} else {
 if ("else") {
 return squint_core.assoc(accum, k7, v8)} else {
@@ -48,8 +49,8 @@ var known_figures = [({ "name": "Fig 1.6 Quadratic Koch island", "angle": 90, "i
 var rebase_0 = function (pts) {
 const min_x1 = squint_core.apply(Math.min, squint_core.mapv(squint_core.first, pts));
 const min_y2 = squint_core.apply(Math.min, squint_core.mapv(squint_core.second, pts));
-return squint_core.mapv((function (p__58) {
-const vec__36 = p__58;
+return squint_core.mapv((function (p__358) {
+const vec__36 = p__358;
 const x7 = squint_core.nth(vec__36, 0, null);
 const y8 = squint_core.nth(vec__36, 1, null);
 return [(x7) - (min_x1), (y8) - (min_y2)];;
@@ -85,8 +86,8 @@ continue;
 }
 ;
 };
-var move = function (p__59, angle) {
-const vec__14 = p__59;
+var move = function (p__359, angle) {
+const vec__14 = p__359;
 const x5 = squint_core.nth(vec__14, 0, null);
 const y6 = squint_core.nth(vec__14, 1, null);
 return [(x5) + (Math.cos(angle)), (y6) + (Math.sin(angle))];;
@@ -99,8 +100,8 @@ let accum4 = [[0, 0]];
 while(true){
 const npos5 = move(pos2, facing3);
 const nkoch6 = squint_core.next(koch1);
-const G__607 = squint_core.first(koch1);
-switch (G__607) {case "F":
+const G__3607 = squint_core.first(koch1);
+switch (G__3607) {case "F":
 let G__9 = nkoch6;
 let G__10 = npos5;
 let G__11 = facing3;
@@ -179,7 +180,7 @@ return padded_ortho_projection(max3, max3);;
 };
 var frag = "\nprecision mediump float;\nuniform vec4 color;\nvoid main() {\n  gl_FragColor = color;\n}\n  ";
 var vert = "\nprecision mediump float;\nuniform mat4 projection;\nattribute vec2 position;\nvoid main() {\n  gl_Position = projection * vec4(position, 0, 1);\n}\n  ";
-var continuous_line = regl(({ "frag": frag, "vert": vert, "uniforms": ({ "color": [1, 0, 0, 1], "projection": regl.prop("projection") }), "attributes": ({ "position": regl.prop("points") }), "elements": (function (ctx, props, batchid) {
+var continuous_line = regl(({ "frag": frag, "vert": vert, "uniforms": ({ "color": [0.8, 0, 0, 0.5], "projection": regl.prop("projection") }), "attributes": ({ "position": regl.prop("points") }), "elements": (function (ctx, props, batchid) {
 return squint_core.mapv((function (_PERCENT_1) {
 return squint_core.list(_PERCENT_1, (_PERCENT_1 + 1));
 }), squint_core.range((squint_core.count(squint_core.get(props, "points")) - 1)));
@@ -193,18 +194,16 @@ return document.querySelector("textarea").value = fig__GT_str(fig);
 ;
 };
 var set_figure_BANG_ = function (fig) {
-document.querySelector(".run").setAttribute("aria-busy", "true");
 const iterations1 = squint_core.get(fig, "iterations", 3);
-const angle2 = (Tau) * (squint_core.get(fig, "angle", 90)) * (1 / 360);
-const result3 = get_koch(fig, iterations1);
-const k4 = materialize(result3, angle2);
-if ((squint_core.count(squint_core.get(result3, "me"))) > (limit)) {
+const result2 = get_koch(fig, iterations1);
+document.querySelector(".wild-mode").checked = false;
+squint_core.reset_BANG_(_STAR_figure, result2);
+squint_core.reset_BANG_(_STAR_precomputed, materialize(result2, (Tau) * (squint_core.get(result2, "angle", 90)) * (1 / 360)));
+squint_core.reset_BANG_(_STAR_projection, best_projection(squint_core.deref(_STAR_precomputed)));
+if ((squint_core.count(squint_core.get(result2, "me"))) > (limit)) {
 document.querySelector(".warning").classList.remove("--hidden")} else {
 document.querySelector(".warning").classList.add("--hidden")};
-document.querySelector(".run").removeAttribute("aria-busy");
-squint_core.reset_BANG_(_STAR_points, k4);
-squint_core.reset_BANG_(_STAR_projection, best_projection(k4));
-return document.querySelector(".text").innerHTML = squint_core.str(squint_core.get(fig, "name"), ", ", iterations1, " iterations, ", squint_core.count(k4), " segments");
+return document.querySelector(".text").innerHTML = squint_core.str(squint_core.get(fig, "name"), ", ", iterations1, " iterations");
 ;;
 };
 var build_menu_BANG_ = function (figures) {
@@ -233,22 +232,37 @@ return set_figure_BANG_(str__GT_fig(textarea2.value));
 });
 return b1.addEventListener("click", on_click3);;
 };
+var render_wild = function (frame) {
+const sine1 = Math.sin((squint_core.get(frame, "time")) * (1));
+const delta2 = (sine1) * (15);
+const angle3 = (Tau) * ((delta2) + (squint_core.get(squint_core.deref(_STAR_figure), "angle", 90))) * (1 / 360);
+const points4 = materialize(squint_core.deref(_STAR_figure), angle3);
+const projection5 = best_projection(points4);
+regl.clear(({ "color": [1, 1, 1, 1], "depth": 1 }));
+return continuous_line(({ "points": points4, "projection": projection5 }));;
+};
+var render_precomputed = function () {
+regl.clear(({ "color": [1, 1, 1, 1], "depth": 1 }));
+if (squint_core.truth_((() => {
+const and__24249__auto__1 = squint_core.deref(_STAR_precomputed);
+if (squint_core.truth_(and__24249__auto__1)) {
+return squint_core.deref(_STAR_projection)} else {
+return and__24249__auto__1};
+})())) {
+return continuous_line(({ "points": squint_core.deref(_STAR_precomputed), "projection": squint_core.deref(_STAR_projection) }));};
+};
 var main = function () {
 console.log("Booting up");
 build_menu_BANG_(known_figures);
 enable_run_BANG_();
 set_figure_BANG_(squint_core.nth(known_figures, 6));
-return regl.frame((function () {
-regl.clear(({ "color": [1, 1, 1, 1], "depth": 1 }));
-if (squint_core.truth_((() => {
-const and__24249__auto__1 = squint_core.deref(_STAR_points);
-if (squint_core.truth_(and__24249__auto__1)) {
-return squint_core.deref(_STAR_projection)} else {
-return and__24249__auto__1};
-})())) {
-return continuous_line(({ "points": squint_core.deref(_STAR_points), "projection": squint_core.deref(_STAR_projection) }));};;
+return regl.frame((function (frame) {
+if (squint_core.truth_(squint_core.deref(_STAR_figure))) {
+if (squint_core.truth_(document.querySelector(".wild-mode").checked)) {
+return render_wild(frame)} else {
+return render_precomputed()};};
 }));
 };
 main();
 
-export { continuous_line, frag, load_figure_BANG_, materialize, regl, padded_ortho_projection, split_into_two, _STAR_points, parse_line_and_collect, vert, get_koch, draw_triangle, rebase_0, best_projection, limit, main, known_figures, build_menu_BANG_, enable_run_BANG_, move, koch_step, _STAR_projection, set_figure_BANG_, fig__GT_str, str__GT_fig, Tau }
+export { continuous_line, _STAR_figure, frag, load_figure_BANG_, materialize, regl, padded_ortho_projection, split_into_two, parse_line_and_collect, vert, get_koch, draw_triangle, rebase_0, best_projection, limit, main, render_wild, known_figures, build_menu_BANG_, _STAR_precomputed, enable_run_BANG_, move, koch_step, _STAR_projection, set_figure_BANG_, fig__GT_str, render_precomputed, str__GT_fig, Tau }

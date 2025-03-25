@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -o pipefail -o errexit -o nounset
+
+cd "$(dirname "$0")/.."
+
+npx squint build
+yarn build
+
+rsync -vaxe ssh public/dist/ spicausis.lv:/services/web/lsystems.spicausis.lv/

@@ -6,10 +6,11 @@
 
 (def Tau (* js/Math.PI 2))
 
-(def *points (atom nil))
+(def *figure (atom nil))
+(def *precomputed (atom nil))
 (def *projection (atom nil))
 
-(def limit 30000) ; prevent browser from freezing when you bump the iterations
+(def limit 20000) ; prevent browser from freezing when you bump the iterations
 
 
 (defn split-into-two
@@ -168,7 +169,7 @@ void main() {
   (regl
     {:frag frag
      :vert vert
-     :uniforms {:color [1 0 0 1 ]
+     :uniforms {:color [0.8 0 0 0.5 ]
                 :projection (regl/prop "projection")}
      :attributes {:position (regl/prop "points") 
                   }
@@ -197,18 +198,17 @@ void main() {
 
 
 (defn set-figure! [fig]
-  (.setAttribute (js/document.querySelector ".run") "aria-busy" "true")
   (let [iterations (:iterations fig 3)
-        angle (* Tau (:angle fig 90) (/ 360))
-        result (get-koch fig iterations)
-        k (materialize result angle)]
+        result (get-koch fig iterations)]
+    (set! (.-checked (js/document.querySelector ".wild-mode")) false)
+    (reset! *figure result)
+    (reset! *precomputed (materialize result (* Tau (:angle result 90) (/ 360))))
+    (reset! *projection (best-projection @*precomputed))
+
     (if (> (count (:me result)) limit)
       (.remove (.-classList (js/document.querySelector ".warning")) "--hidden")
       (.add (.-classList (js/document.querySelector ".warning")) "--hidden"))
-    (.removeAttribute (js/document.querySelector ".run") "aria-busy")
-    (reset! *points k)
-    (reset! *projection (best-projection k))
-    (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations, " (count k) " segments"))))
+    (set! (.-innerHTML (js/document.querySelector ".text")) (str (:name fig) ", " iterations " iterations"))))
 
 
 (defn build-menu! [figures]
@@ -235,7 +235,26 @@ void main() {
                    (set-figure! (str->fig (.-value textarea))))]
     (.addEventListener b "click" on-click)))
 
+(defn render-wild [frame]
+  (let [sine (js/Math.sin (* (:time frame) 1))
+        delta (* sine 15.0)
+        angle (* Tau (+ delta (:angle @*figure 90)) (/ 360))
+        points (materialize @*figure angle)
+        projection (best-projection points)]
 
+    (regl/clear {:color [1, 1, 1, 1]
+                 :depth 1 })
+
+    (continuous-line {:points points
+                      :projection projection })))
+
+
+(defn render-precomputed []
+  (regl/clear {:color [1, 1, 1, 1]
+               :depth 1 })
+  (when (and @*precomputed @*projection)
+    (continuous-line {:points @*precomputed
+                      :projection @*projection })))
 
 (defn main[]
   (js/console.log "Booting up")
@@ -244,11 +263,10 @@ void main() {
   (enable-run!)
   (set-figure! (nth known-figures 6))
 
-  (regl/frame #(do
-                 (regl/clear {:color [1, 1, 1, 1]
-                              :depth 1 })
-                 (when (and @*points @*projection)
-                   (continuous-line {:points @*points
-                                     :projection @*projection })))))
+  (regl/frame (fn [frame]
+                (when @*figure
+                  (if (.-checked (js/document.querySelector ".wild-mode"))
+                    (render-wild frame)
+                    (render-precomputed))))))
 
 (main)
